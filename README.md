@@ -1,1 +1,1 @@
-# movies-explorer-api
+# API для дипломной работы
