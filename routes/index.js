@@ -1,7 +1,7 @@
 const express = require('express');
 const { celebrate, Joi, Segments } = require('celebrate');
 const routerUsers = require('./users');
-// const routerCards = require('./cards');
+const routerMovies = require('./movies');
 const wrongPath = require('./wrongPath');
 const { createUser, login } = require('../controllers/users');
 
@@ -22,7 +22,7 @@ index.post('/signup', celebrate({
 }), createUser);
 
 index.use(routerUsers);
-// index.use(routerCards);
+index.use(routerMovies);
 index.use(wrongPath);
 
 module.exports = index;
