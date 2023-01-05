@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const cors = require('cors');
@@ -24,6 +25,7 @@ const options = {
   credentials: true,
 };
 
+app.use(helmet());
 app.use('*', cors(options));
 app.use(cookieParser());
 app.use(express.json());

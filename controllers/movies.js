@@ -1,6 +1,7 @@
 const { StatusCodes } = require('http-status-codes');
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const Movie = require('../models/movies');
 
 module.exports.getMovies = (req, res, next) => {
@@ -55,6 +56,8 @@ module.exports.deleteMovie = (req, res, next) => {
     .then((movie) => {
       if (movie === null) {
         throw new NotFoundError('Удаление фильма с несуществующим в БД id');
+      } else if (movie.owner.toString() !== req.user._id) {
+        throw new ForbiddenError('Удаление чужого фильма запрещено');
       } else {
         return movie;
       }
