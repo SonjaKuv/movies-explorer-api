@@ -1,5 +1,5 @@
 # API для дипломной работы
-IP 51.250.91.36
+IP 158.160.32.150
 
 Backend https://api.sonja-diplom.nomoredomains.club
 
