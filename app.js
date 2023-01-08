@@ -5,11 +5,13 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const cors = require('cors');
-const routes = require('./routes/index');
+const routes = require('./routes');
 const handleErrors = require('./middlewares/handleErorrs');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const limiter = require('./middlewares/rateLimiter');
+const MONGODB_ADDRESS = require('./utils/constants');
 
-const { PORT = 3000 } = process.env;
+const { NODE_ENV, DB_ADDRESS, PORT = 3000 } = process.env;
 const app = express();
 
 const options = {
@@ -31,13 +33,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
-
+app.use(limiter);
 app.use(routes);
 app.use(errorLogger);
 app.use(errors());
 app.use(handleErrors);
 
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
+mongoose.connect(NODE_ENV === 'production' ? DB_ADDRESS : MONGODB_ADDRESS, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   autoIndex: true,

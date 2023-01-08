@@ -5,8 +5,8 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const Movie = require('../models/movies');
 
 module.exports.getMovies = (req, res, next) => {
-  Movie.find({})
-    .populate(['owner'])
+  const owner = req.user._id;
+  Movie.find({ owner })
     .then((movies) => res.status(StatusCodes.OK).send({ data: movies }))
     .catch(next);
 };
@@ -19,7 +19,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,
@@ -33,7 +33,7 @@ module.exports.createMovie = (req, res, next) => {
     year,
     description,
     image,
-    trailer,
+    trailerLink,
     nameRU,
     nameEN,
     thumbnail,

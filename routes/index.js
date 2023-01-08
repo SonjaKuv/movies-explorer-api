@@ -1,26 +1,19 @@
 const express = require('express');
-const { celebrate, Joi, Segments } = require('celebrate');
 const routerUsers = require('./users');
 const routerMovies = require('./movies');
 const wrongPath = require('./wrongPath');
 const { createUser, login } = require('../controllers/users');
+const auth = require('../middlewares/auth');
+const {
+  signInValidation, signUpValidation,
+} = require('../middlewares/validation');
 
 const index = express();
 
-index.post('/signin', celebrate({
-  [Segments.BODY]: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().pattern(/\w{8,30}/).required().min(8),
-  }),
-}), login);
-index.post('/signup', celebrate({
-  [Segments.BODY]: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().pattern(/\w{8,30}/).required().min(8),
-    name: Joi.string().min(2).max(30),
-  }),
-}), createUser);
+index.post('/signin', signInValidation, login);
+index.post('/signup', signUpValidation, createUser);
 
+index.use(auth);
 index.use(routerUsers);
 index.use(routerMovies);
 index.use(wrongPath);
