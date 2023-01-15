@@ -9,7 +9,6 @@ const routes = require('./routes');
 const handleErrors = require('./middlewares/handleErorrs');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const limiter = require('./middlewares/rateLimiter');
-const MONGODB_ADDRESS = require('./utils/constants');
 
 const { NODE_ENV, DB_ADDRESS, PORT = 3000 } = process.env;
 const app = express();
@@ -27,6 +26,8 @@ const options = {
   credentials: true,
 };
 
+mongoose.set('strictQuery', true);
+
 app.use(helmet());
 app.use('*', cors(options));
 app.use(cookieParser());
@@ -39,7 +40,9 @@ app.use(errorLogger);
 app.use(errors());
 app.use(handleErrors);
 
-mongoose.connect(NODE_ENV === 'production' ? DB_ADDRESS : MONGODB_ADDRESS, {
+const DB = NODE_ENV === 'production' ? DB_ADDRESS : 'mongodb://127.0.0.1:27017/bitfilmsdb';
+
+mongoose.connect(DB, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   autoIndex: true,
